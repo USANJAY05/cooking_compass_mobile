@@ -365,3 +365,16 @@ The routine screen must remain compatible with backend deployments where `/api/v
 - Do not perform AsyncStorage token reads for every request. `tokenService` keeps the current token in memory and persists changes to storage.
 - SQLite hydration must read a bounded recent working set and defer cleanup until after hydration. Persistent cache is an optimization, not a rendering blocker.
 - Pull-to-refresh should explicitly refetch the active query only; never refetch unrelated tabs/details.
+
+## Routine deletion and cart consistency
+
+Deleting a routine is a cross-resource mutation because the generated shopping cart can depend on routine contents. The delete mutation must:
+
+1. cancel active routine-list queries;
+2. optimistically remove the deleted routine from every cached routine list/search result;
+3. remove the deleted routine detail cache;
+4. restore the previous routine-list snapshots if deletion fails;
+5. invalidate `queryKeys.routines.all` after success;
+6. invalidate `queryKeys.cart.all` after success so an active Cart screen refetches immediately and an inactive Cart query is marked stale for its next mount.
+
+Do not wait for an app reload to make the cart correct. Do not manually patch cart ingredient quantities on the client unless the backend contract explicitly guarantees the required dependency graph; the cart endpoint remains authoritative.

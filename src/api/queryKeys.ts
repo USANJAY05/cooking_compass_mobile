@@ -5,6 +5,10 @@ export const queryKeys = {
     search: (query: string, params: unknown) => ['recipes', 'search', query, params] as const,
     detail: (id?: number) => ['recipe', id] as const,
   },
+  cart: {
+    all: ['cart'] as const,
+    list: (days: number) => ['cart', days] as const,
+  },
   routines: {
     all: ['routines'] as const,
     list: (params: unknown) => ['routines', params] as const,

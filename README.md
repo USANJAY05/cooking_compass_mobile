@@ -258,3 +258,40 @@ The app uses `react-native-toast-message` for user-facing transport/session erro
 Network requests use bounded timeouts and TanStack Query does not automatically retry failed requests. Cached data is retained while a background refresh is attempted. Authentication tokens are read from AsyncStorage once and then served from memory until they change.
 
 SQLite hydration loads only the recent bounded query-cache working set during bootstrap; stale-row cleanup runs asynchronously so startup is not delayed by maintenance work.
+
+## Routine deletion and cart freshness
+
+Routine deletion is treated as a cross-resource mutation. The frontend removes the routine optimistically from all cached routine lists, rolls the change back if the delete fails, removes the deleted routine detail cache, and invalidates both routine and cart query families after a successful delete.
+
+This means:
+
+```text
+Delete routine
+    ↓
+Routine disappears immediately
+    ↓
+DELETE /api/v1/routines/{id}
+    ├── failure → restore routine
+    └── success
+          ├── invalidate routines
+          └── invalidate cart
+                ↓
+          active Cart refetches immediately
+          inactive Cart becomes stale for next open
+```
+
+The cart remains server-authoritative. The client intentionally does not try to reconstruct ingredient quantities after a routine deletion.
+
+## Git change discipline
+
+Use small, behavior-focused commits. Recommended prefixes:
+
+- `feat:` new user-facing behavior
+- `fix:` bug fixes
+- `perf:` measurable performance improvements
+- `refactor:` internal architecture changes without behavior changes
+- `test:` tests only
+- `docs:` documentation only
+- `chore:` tooling/dependency maintenance
+
+For cross-resource mutations, keep cache invalidation and rollback behavior in the API hook rather than scattering invalidation calls through screens/components.

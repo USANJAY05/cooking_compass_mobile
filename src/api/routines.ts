@@ -109,10 +109,57 @@ export const useUpdateRoutine = () => {
 
 export const useDeleteRoutine = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: deleteRoutine,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.routines.all });
+
+    // Remove the routine from every mounted/cached list immediately so the
+    // UI never waits for a reload to reflect a successful deletion.
+    onMutate: async (routineId) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.routines.all });
+
+      const previousRoutineLists = queryClient.getQueriesData<RoutineListResponse>({
+        queryKey: queryKeys.routines.all,
+      });
+
+      queryClient.setQueriesData<RoutineListResponse>(
+        { queryKey: queryKeys.routines.all },
+        (current) => {
+          if (!current) return current;
+
+          const items = current.items.filter((routine) => routine.id !== routineId);
+          if (items.length === current.items.length) return current;
+
+          return {
+            ...current,
+            items,
+            total: Math.max(0, current.total - 1),
+          };
+        },
+      );
+
+      queryClient.removeQueries({ queryKey: queryKeys.routines.detail(routineId) });
+
+      return { previousRoutineLists };
+    },
+
+    onError: (_error, _routineId, context) => {
+      // Restore the exact cached list state if the server rejected deletion.
+      context?.previousRoutineLists.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+    },
+
+    onSuccess: async (_data, routineId) => {
+      // Revalidate routine lists and all cart variants. A routine contributes
+      // ingredients to the generated cart, so deleting it makes existing cart
+      // data stale even if the Cart screen is not currently mounted.
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.routines.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.cart.all }),
+      ]);
+
+      queryClient.removeQueries({ queryKey: queryKeys.routines.detail(routineId) });
     },
   });
 };
