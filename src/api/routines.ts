@@ -86,12 +86,29 @@ export const useRoutineDetail = (routineId?: number) => {
   });
 };
 
+const invalidateRoutineDerivedQueries = async (queryClient: ReturnType<typeof useQueryClient>) => {
+  // A routine contributes to the generated cart. Any create/update/delete
+  // mutation therefore makes every cart variant stale. Keep the backend as
+  // the source of truth instead of trying to reproduce cart calculations in
+  // the mobile client.
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: queryKeys.routines.all }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.cart.all }),
+  ]);
+};
+
 export const useCreateRoutine = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createRoutine,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.routines.all });
+    onSuccess: (createdRoutine: RoutineDetailResponse) => {
+      // Seed the detail cache when the API returns a complete routine. The
+      // list and cart are still invalidated because the server remains the
+      // authoritative source for derived data and pagination/counts.
+      if (createdRoutine?.id) {
+        queryClient.setQueryData(queryKeys.routines.detail(createdRoutine.id), createdRoutine);
+      }
+      void invalidateRoutineDerivedQueries(queryClient);
     },
   });
 };
@@ -100,9 +117,12 @@ export const useUpdateRoutine = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateRoutine,
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.routines.all });
-      queryClient.invalidateQueries({ queryKey: queryKeys.routines.detail(variables.id) });
+    onSuccess: (updatedRoutine, variables) => {
+      // Update the detail cache immediately so the screen that initiated the
+      // mutation never displays the previous routine. Lists and cart are
+      // revalidated because recurrence/items can affect both.
+      queryClient.setQueryData(queryKeys.routines.detail(variables.id), updatedRoutine);
+      void invalidateRoutineDerivedQueries(queryClient);
     },
   });
 };
@@ -150,14 +170,11 @@ export const useDeleteRoutine = () => {
       });
     },
 
-    onSuccess: async (_data, routineId) => {
+    onSuccess: (_data, routineId) => {
       // Revalidate routine lists and all cart variants. A routine contributes
       // ingredients to the generated cart, so deleting it makes existing cart
       // data stale even if the Cart screen is not currently mounted.
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.routines.all }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.cart.all }),
-      ]);
+      void invalidateRoutineDerivedQueries(queryClient);
 
       queryClient.removeQueries({ queryKey: queryKeys.routines.detail(routineId) });
     },

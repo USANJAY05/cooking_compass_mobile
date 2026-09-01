@@ -295,3 +295,7 @@ Use small, behavior-focused commits. Recommended prefixes:
 - `chore:` tooling/dependency maintenance
 
 For cross-resource mutations, keep cache invalidation and rollback behavior in the API hook rather than scattering invalidation calls through screens/components.
+
+### Routine mutation cache consistency
+
+Routine create/update/delete operations invalidate both routine queries and the cart because cart contents are derived from routines. The frontend updates obvious local state immediately and lets the backend remain authoritative for the final cart calculation.

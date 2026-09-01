@@ -378,3 +378,14 @@ Deleting a routine is a cross-resource mutation because the generated shopping c
 6. invalidate `queryKeys.cart.all` after success so an active Cart screen refetches immediately and an inactive Cart query is marked stale for its next mount.
 
 Do not wait for an app reload to make the cart correct. Do not manually patch cart ingredient quantities on the client unless the backend contract explicitly guarantees the required dependency graph; the cart endpoint remains authoritative.
+
+## Routine mutation consistency
+
+Routine create, update, and delete are cross-resource mutations because routines contribute to the generated cart.
+
+Rules:
+- On create: seed the returned routine detail when possible, invalidate all routine list/search queries, and invalidate all cart variants.
+- On update: immediately update the routine detail cache with the server response, then invalidate routine lists/search and all cart variants.
+- On delete: optimistically remove the routine from cached lists, remove its detail cache, and invalidate all cart variants; roll back the list on failure.
+- Do not reproduce backend cart aggregation logic in the client. Cart invalidation must cause the backend to remain the source of truth.
+- Mutation success callbacks should not wait for background invalidation/refetch unless the UI explicitly requires the fresh server response before continuing. Use fire-and-forget invalidation to keep navigation responsive.
