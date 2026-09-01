@@ -4,14 +4,11 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TextInput,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
-  Search,
-  X,
   AlertTriangle,
   BookOpen,
 } from 'lucide-react-native';
@@ -23,6 +20,7 @@ import { RecipeCard } from '../components/RecipeCard';
 import { RecipeMenuModal } from '../components/RecipeMenuModal';
 import { RecipeSummaryComponent } from '../api/types';
 import { useTheme, colors } from '../theme';
+import { SearchInput } from '../components/SearchInput';
 
 export const RecipesFeedScreen = () => {
   const { theme } = useTheme();
@@ -355,73 +353,13 @@ export const RecipesFeedScreen = () => {
         },
       ]}
     >
-      {/* ========================================================
-          SEARCH BAR
-          ======================================================== */}
-
-      <View
-        style={[
-          styles.searchContainer,
-          {
-            backgroundColor:
-              theme.colors.surface,
-            borderColor:
-              colors.info + '24',
-          },
-        ]}
-      >
-        <View
-          style={[
-            styles.searchIconWrap,
-            {
-              backgroundColor:
-                colors.info + '12',
-            },
-          ]}
-        >
-          <Search
-            size={17}
-            color={colors.info}
-          />
-        </View>
-
-        <TextInput
-          placeholder="Search public recipes..."
-          placeholderTextColor={
-            theme.colors.textMuted
-          }
-          style={[
-            styles.searchInput,
-            {
-              color: theme.colors.text,
-            },
-          ]}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-
-        {searchQuery.length > 0 && (
-          <TouchableOpacity
-            onPress={handleClearSearch}
-            style={[
-              styles.clearButton,
-              {
-                backgroundColor:
-                  theme.colors.background,
-                borderColor:
-                  theme.colors.border,
-              },
-            ]}
-          >
-            <X
-              size={18}
-              color={theme.colors.textMuted}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
+      <SearchInput
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder="Search public recipes..."
+        style={[styles.searchContainer, { backgroundColor: theme.colors.surface, borderColor: colors.info + '24' }]}
+        iconColor={colors.info}
+      />
 
       {/* ========================================================
           CONTENT

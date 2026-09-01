@@ -2,12 +2,11 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { ChevronDown, Square, CheckSquare } from 'lucide-react-native';
 import { useTheme } from '../theme';
-import { Category } from '../api/categories';
+import { Category, useCategories } from '../api/categories';
 import { SearchListModal } from './SearchListModal';
 
 interface CategoryMultiSelectProps {
   label?: string;
-  categories: Category[];
   selectedIds: number[];
   onChange: (ids: number[]) => void;
   placeholder?: string;
@@ -33,23 +32,26 @@ const buildDisplayLabel = (
 
 export const CategoryMultiSelect: React.FC<CategoryMultiSelectProps> = ({
   label,
-  categories,
   selectedIds,
   onChange,
   placeholder = 'Select categories...',
   style,
 }) => {
   const { theme } = useTheme();
+  const categoriesQuery = useCategories();
+  const resolvedCategories = categoriesQuery.data ?? [];
+  const isLoadingCategories = categoriesQuery.isLoading && resolvedCategories.length === 0;
+  const isRefreshingCategories = categoriesQuery.isRefetching;
   const [visible, setVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredCategories = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return categories;
-    return categories.filter((cat) => cat.name.toLowerCase().includes(query));
-  }, [categories, searchQuery]);
+    if (!query) return resolvedCategories;
+    return resolvedCategories.filter((cat) => cat.name.toLowerCase().includes(query));
+  }, [resolvedCategories, searchQuery]);
 
-  const displayLabel = buildDisplayLabel(categories, selectedIds, placeholder);
+  const displayLabel = buildDisplayLabel(resolvedCategories, selectedIds, placeholder);
 
   const toggleCategory = (id: number) => {
     onChange(
@@ -100,9 +102,11 @@ export const CategoryMultiSelect: React.FC<CategoryMultiSelectProps> = ({
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search categories..."
+        onRefresh={categoriesQuery.reload}
+        isRefreshing={isRefreshingCategories}
         ListEmptyComponent={
           <View style={styles.emptyList}>
-            <Text style={{ color: theme.colors.textMuted }}>No categories available.</Text>
+            <Text style={{ color: theme.colors.textMuted }}>{isLoadingCategories ? 'Loading categories...' : 'No categories available.'}</Text>
           </View>
         }
         footer={

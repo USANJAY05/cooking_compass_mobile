@@ -389,3 +389,12 @@ Rules:
 - On delete: optimistically remove the routine from cached lists, remove its detail cache, and invalidate all cart variants; roll back the list on failure.
 - Do not reproduce backend cart aggregation logic in the client. Cart invalidation must cause the backend to remain the source of truth.
 - Mutation success callbacks should not wait for background invalidation/refetch unless the UI explicitly requires the fresh server response before continuing. Use fire-and-forget invalidation to keep navigation responsive.
+
+## Categories and search invariants
+
+- Use `queryKeys.categories.all` / `queryKeys.categories.list(...)` for category queries.
+- Categories have a long stale time because they are reference data. An explicit Reload must call the category query's refetch/invalidation path.
+- If category CRUD is introduced, invalidate categories after successful mutations with `invalidateCategories(queryClient)`.
+- Do not add one-off category query keys.
+- Reuse `src/components/SearchInput.tsx` for normal inline search fields. `SearchListModal` also uses this component internally.
+- Keep search UI behavior consistent: clear action, `autoCapitalize="none"`, `autoCorrect={false}`, theme-aware colors, and accessible clear button.

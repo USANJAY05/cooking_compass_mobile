@@ -6,7 +6,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
 } from 'react-native';
 
 import {
@@ -14,11 +13,10 @@ import {
   ChevronLeft,
   ChevronDown,
   ChevronUp,
-  Search,
-  X,
 } from 'lucide-react-native';
 
 import { useTheme, colors } from '../theme';
+import { SearchInput } from '../components/SearchInput';
 
 import {
   NutritionData,
@@ -300,39 +298,12 @@ export const NutritionDetailScreen = ({
         </Text>
       ) : null}
 
-      <View
-        style={[
-          styles.searchBox,
-          {
-            borderColor: theme.colors.border,
-          },
-        ]}
-      >
-        <Search
-          size={17}
-          color={theme.colors.textMuted}
-        />
-
-        <TextInput
-          value={nutritionQuery}
-          onChangeText={setNutritionQuery}
-          placeholder="Search nutrition"
-          placeholderTextColor={theme.colors.textMuted}
-          style={[
-            styles.searchInput,
-            { color: theme.colors.text },
-          ]}
-        />
-
-        {nutritionQuery.length > 0 ? (
-          <TouchableOpacity
-            onPress={() => setNutritionQuery('')}
-            activeOpacity={0.7}
-          >
-            <X size={16} color={theme.colors.textMuted} />
-          </TouchableOpacity>
-        ) : null}
-      </View>
+      <SearchInput
+        value={nutritionQuery}
+        onChangeText={setNutritionQuery}
+        placeholder="Search nutrition"
+        style={[styles.searchBox, { borderColor: theme.colors.border }]}
+      />
 
       {/* CALORIES */}
 

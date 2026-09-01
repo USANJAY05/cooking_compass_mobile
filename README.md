@@ -299,3 +299,11 @@ For cross-resource mutations, keep cache invalidation and rollback behavior in t
 ### Routine mutation cache consistency
 
 Routine create/update/delete operations invalidate both routine queries and the cart because cart contents are derived from routines. The frontend updates obvious local state immediately and lets the backend remain authoritative for the final cart calculation.
+
+## Categories and shared search
+
+- Categories use the centralized `queryKeys.categories` query and are persisted with the normal query cache.
+- Category data is intentionally long-lived (`30m` stale time) because categories change infrequently.
+- The category selector has an explicit **Reload** action for forcing a server refresh without waiting for cache expiry.
+- Use `invalidateCategories(queryClient)` after any future category create/update/delete mutation. Do not create ad-hoc `['categories']` keys.
+- `SearchInput` is the shared search field for screens and `SearchListModal`; reuse it instead of creating another search `TextInput` implementation.

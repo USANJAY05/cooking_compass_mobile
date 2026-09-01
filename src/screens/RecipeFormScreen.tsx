@@ -43,7 +43,6 @@ import {
 
 import { useCreateRecipe, useRecipeDetail, useUpdateRecipe } from '../api/recipes';
 
-import { useCategories } from '../api/categories';
 
 import {
   useIngredients,
@@ -307,7 +306,6 @@ export const RecipeFormScreen = ({
      DATA
   ------------------------------------------------------------------------ */
 
-  const { data: categories = [] } = useCategories();
 
   const { data: defaultIngredients = [] } = useIngredients(1, 50);
 
@@ -808,10 +806,8 @@ export const RecipeFormScreen = ({
               <View style={styles.wizardField}>
                 <CategoryMultiSelect
                   label="Categories"
-                  categories={categories}
                   selectedIds={selectedCategoryIds}
                   onChange={setSelectedCategoryIds}
-                  placeholder={categories.length ? "Select categories..." : "Loading categories..."}
                 />
               </View>
               <View style={styles.wizardFieldLast}>
@@ -1366,7 +1362,6 @@ export const RecipeFormScreen = ({
 
             <CategoryMultiSelect
               label=""
-              categories={categories}
               selectedIds={selectedCategoryIds}
               onChange={setSelectedCategoryIds}
               placeholder="Select categories..."

@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Modal,
   FlatList,
@@ -11,9 +10,10 @@ import {
   StyleSheet,
   ListRenderItem,
 } from 'react-native';
-import { Search, Check, X } from 'lucide-react-native';
+import { Check } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../theme';
+import { SearchInput } from './SearchInput';
 
 interface SearchListModalProps<T> {
   visible: boolean;
@@ -29,6 +29,8 @@ interface SearchListModalProps<T> {
   footer?: React.ReactNode;
   enableSearch?: boolean;
   autoFocusSearch?: boolean;
+  onRefresh?: () => void | Promise<unknown>;
+  isRefreshing?: boolean;
 }
 
 export function SearchListModal<T>({
@@ -43,11 +45,12 @@ export function SearchListModal<T>({
   searchPlaceholder = 'Search...',
   ListEmptyComponent,
   enableSearch = true,
+  onRefresh,
+  isRefreshing = false,
 }: SearchListModalProps<T>) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
 
-  const searchInputRef = useRef<TextInput>(null);
 
   /*
    * When the modal opens:
@@ -71,22 +74,11 @@ export function SearchListModal<T>({
 
   const handleDone = () => {
     Keyboard.dismiss();
-    searchInputRef.current?.blur();
     onClose();
   };
 
-  const handleSearchFocus = () => {
-    // Keyboard opens naturally when user taps search.
-  };
-
-  const handleSearchBlur = () => {
-    Keyboard.dismiss();
-  };
-
   const handleListScroll = () => {
-    // Hide keyboard when user starts browsing the results.
     Keyboard.dismiss();
-    searchInputRef.current?.blur();
   };
 
   return (
@@ -144,6 +136,19 @@ export function SearchListModal<T>({
             </Text>
           </View>
 
+          {onRefresh ? (
+            <TouchableOpacity
+              onPress={() => void onRefresh()}
+              disabled={isRefreshing}
+              activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel="Reload list"
+              style={[styles.reloadButton, { borderColor: theme.colors.border, opacity: isRefreshing ? 0.5 : 1 }]}
+            >
+              <Text style={[styles.reloadText, { color: theme.colors.text }]}>Reload</Text>
+            </TouchableOpacity>
+          ) : null}
+
           {/* GREEN TICK */}
           <TouchableOpacity
             onPress={handleDone}
@@ -170,57 +175,12 @@ export function SearchListModal<T>({
         ====================================================== */}
 
         {enableSearch && onSearchChange ? (
-          <View
-            style={[
-              styles.searchBox,
-              {
-                backgroundColor: theme.colors.surface,
-                borderColor: theme.colors.border,
-              },
-            ]}
-          >
-            <Search
-              size={19}
-              color={theme.colors.textMuted}
-              strokeWidth={2}
-            />
-
-            <TextInput
-              ref={searchInputRef}
-              style={[
-                styles.searchInput,
-                {
-                  color: theme.colors.text,
-                },
-              ]}
-              placeholder={searchPlaceholder}
-              placeholderTextColor={theme.colors.textMuted}
-              value={searchQuery}
-              onChangeText={onSearchChange}
-              autoFocus={false}
-              returnKeyType="search"
-              onFocus={handleSearchFocus}
-              onBlur={handleSearchBlur}
-            />
-
-            {searchQuery.length > 0 && (
-              <TouchableOpacity
-                onPress={() => onSearchChange('')}
-                hitSlop={{
-                  top: 10,
-                  bottom: 10,
-                  left: 10,
-                  right: 10,
-                }}
-              >
-                <X
-                  size={18}
-                  color={theme.colors.textMuted}
-                  strokeWidth={2}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+          <SearchInput
+            value={searchQuery}
+            onChangeText={onSearchChange}
+            placeholder={searchPlaceholder}
+            style={[styles.searchBox, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}
+          />
         ) : null}
 
         {/* =====================================================
@@ -284,6 +244,19 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
+  reloadButton: {
+    minHeight: 38,
+    paddingHorizontal: 12,
+    borderRadius: 9,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  reloadText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
   doneButton: {
     width: 46,
     height: 46,
@@ -317,13 +290,6 @@ const styles = StyleSheet.create({
     gap: 9,
   },
 
-  searchInput: {
-    flex: 1,
-    minHeight: 46,
-    fontSize: 15,
-    fontWeight: '500',
-    paddingVertical: 0,
-  },
 
   list: {
     flex: 1,

@@ -4,14 +4,11 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TextInput,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
-  Search,
-  X,
   AlertTriangle,
   Plus,
   BookOpen,
@@ -24,6 +21,7 @@ import { RecipeCard } from '../components/RecipeCard';
 import { RecipeMenuModal } from '../components/RecipeMenuModal';
 import { RecipeSummaryComponent } from '../api/types';
 import { useTheme, colors } from '../theme';
+import { SearchInput } from '../components/SearchInput';
 
 export const RecipesMineScreen = () => {
   const { theme } = useTheme();
@@ -416,73 +414,13 @@ export const RecipesMineScreen = () => {
         },
       ]}
     >
-      {/* ========================================================
-          SEARCH BAR
-          ======================================================== */}
-
-      <View
-        style={[
-          styles.searchContainer,
-          {
-            backgroundColor:
-              theme.colors.surface,
-            borderColor:
-              colors.info + '24',
-          },
-        ]}
-      >
-        <View
-          style={[
-            styles.searchIconWrap,
-            {
-              backgroundColor:
-                colors.info + '12',
-            },
-          ]}
-        >
-          <Search
-            size={17}
-            color={colors.info}
-          />
-        </View>
-
-        <TextInput
-          placeholder="Search your recipes..."
-          placeholderTextColor={
-            theme.colors.textMuted
-          }
-          style={[
-            styles.searchInput,
-            {
-              color: theme.colors.text,
-            },
-          ]}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-
-        {searchQuery.length > 0 && (
-          <TouchableOpacity
-            onPress={handleClearSearch}
-            style={[
-              styles.clearButton,
-              {
-                backgroundColor:
-                  theme.colors.background,
-                borderColor:
-                  theme.colors.border,
-              },
-            ]}
-          >
-            <X
-              size={18}
-              color={theme.colors.textMuted}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
+      <SearchInput
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder="Search your recipes..."
+        style={[styles.searchContainer, { backgroundColor: theme.colors.surface, borderColor: colors.info + '24' }]}
+        iconColor={colors.info}
+      />
 
       {/* ========================================================
           CONTENT
