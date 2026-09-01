@@ -136,19 +136,6 @@ export function SearchListModal<T>({
             </Text>
           </View>
 
-          {onRefresh ? (
-            <TouchableOpacity
-              onPress={() => void onRefresh()}
-              disabled={isRefreshing}
-              activeOpacity={0.8}
-              accessibilityRole="button"
-              accessibilityLabel="Reload list"
-              style={[styles.reloadButton, { borderColor: theme.colors.border, opacity: isRefreshing ? 0.5 : 1 }]}
-            >
-              <Text style={[styles.reloadText, { color: theme.colors.text }]}>Reload</Text>
-            </TouchableOpacity>
-          ) : null}
-
           {/* GREEN TICK */}
           <TouchableOpacity
             onPress={handleDone}
@@ -199,6 +186,8 @@ export function SearchListModal<T>({
               : 'on-drag'
           }
           onScrollBeginDrag={handleListScroll}
+          onRefresh={onRefresh ? () => void onRefresh() : undefined}
+          refreshing={Boolean(onRefresh && isRefreshing)}
           showsVerticalScrollIndicator={false}
           style={styles.list}
           contentContainerStyle={[
@@ -244,19 +233,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  reloadButton: {
-    minHeight: 38,
-    paddingHorizontal: 12,
-    borderRadius: 9,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 8,
-  },
-  reloadText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
   doneButton: {
     width: 46,
     height: 46,

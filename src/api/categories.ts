@@ -29,7 +29,7 @@ export const useCategories = (page = 1, pageSize = 100) => {
     staleTime: CATEGORIES_STALE_TIME,
     gcTime: CATEGORIES_GC_TIME,
     retry: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
