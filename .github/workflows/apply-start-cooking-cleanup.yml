@@ -1,0 +1,37 @@
+name: Apply Start Cooking Cleanup
+
+on:
+  push:
+    branches:
+      - bugfix/recipe-detail-components
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Remove decorative cooking-flow borders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('src/components/RecipeCookingFlow.tsx')
+          s = p.read_text()
+          s = s.replace("""                  backgroundColor:\n                    theme.colors\n                      .surface,\n                  borderColor:\n                    theme.colors\n                      .border,\n""", """                  backgroundColor:\n                    theme.colors\n                      .surface,\n""", 2)
+          s = s.replace("""  timerCard: {\n    minHeight: 90,\n\n    borderWidth: 1,\n    borderRadius: 8,\n""", """  timerCard: {\n    minHeight: 90,\n\n    borderRadius: 8,\n""")
+          s = s.replace("""  cookIngredientCard: {\n    marginTop: 18,\n    borderWidth: 1,\n    borderRadius: 8,\n""", """  cookIngredientCard: {\n    marginTop: 18,\n    borderRadius: 8,\n""")
+          p.write_text(s)
+          PY
+      - name: Commit and clean up
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/RecipeCookingFlow.tsx
+          git commit -m "fix: remove decorative Start Cooking borders"
+          git rm .github/workflows/apply-start-cooking-cleanup.yml
+          git commit -m "chore: remove temporary cooking cleanup workflow"
+          git push origin HEAD:bugfix/recipe-detail-components
