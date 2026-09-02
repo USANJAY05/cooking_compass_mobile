@@ -1,0 +1,46 @@
+name: Semantic Version Bump
+
+on:
+  pull_request_target:
+    types: [closed]
+    branches: [dev]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  bump-version:
+    if: github.event.pull_request.merged == true && (startsWith(github.event.pull_request.head.ref, 'feature/') || startsWith(github.event.pull_request.head.ref, 'bugfix/'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump semantic version
+        env:
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [[ "$HEAD_BRANCH" == feature/* ]]; then
+            npm version minor --no-git-tag-version
+          elif [[ "$HEAD_BRANCH" == bugfix/* ]]; then
+            npm version patch --no-git-tag-version
+          else
+            echo "Unsupported branch prefix: $HEAD_BRANCH"
+            exit 1
+          fi
+
+      - name: Commit version bump
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git add package.json package-lock.json
+          git commit -m "chore(release): bump version to v$VERSION [skip ci]"
+          git push origin dev
