@@ -1,0 +1,36 @@
+name: Promote Dev to Staging
+
+on:
+  schedule:
+    - cron: '30 3 */2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create staging promotion PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          EXISTING=$(gh pr list --repo "${{ github.repository }}" --base staging --head dev --state open --json number --jq 'length')
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "A dev -> staging PR is already open."
+            exit 0
+          fi
+
+          if gh api "repos/${{ github.repository }}/compare/staging...dev" --jq '.ahead_by' | grep -q '^0$'; then
+            echo "No new commits to promote."
+            exit 0
+          fi
+
+          gh pr create \
+            --repo "${{ github.repository }}" \
+            --base staging \
+            --head dev \
+            --title "chore: promote dev to staging" \
+            --body "Scheduled staging promotion from dev. Merge after staging validation."
