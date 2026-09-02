@@ -95,6 +95,9 @@ export const RecipeCookingFlow = ({
                   backgroundColor:
                     theme.colors
                       .surface,
+                  borderColor:
+                    theme.colors
+                      .border,
                 },
               ]}
             >
