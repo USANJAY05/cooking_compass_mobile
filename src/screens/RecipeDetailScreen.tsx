@@ -26,14 +26,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   Timer,
-  Flame,
-  ChevronRight,
-  Beef,
-  Wheat,
-  Droplets,
-  Leaf,
-  Cookie,
-  Waves,
   Play,
   Pencil,
   Info,
@@ -47,6 +39,8 @@ import {
 import { useCategories } from '../api/categories';
 
 import { PortionAdjuster } from '../components/PortionAdjuster';
+import { RecipeRating } from '../components/recipe/RecipeRating';
+import { RecipeNutrition } from '../components/recipe/RecipeNutrition';
 import { RecipeCookingFlow } from '../components/RecipeCookingFlow';
 import { RecipeRecordingFlow, RecordingStep } from '../components/RecipeRecordingFlow';
 import { getRecipeCreationMode, RecipeCreationMode } from '../settings/RecipeCreationMode';
@@ -62,10 +56,6 @@ import {
   normalizePortionUnit,
   PortionMode,
   scaleIngredientQuantity,
-  prepareNutritionBreakdown,
-  getSummaryNutritionItems,
-  hasNutritionContent,
-  formatNutritionAmount,
 } from '../utils/nutrition';
 
 import { formatUnitLabel } from '../utils/quantity';
@@ -109,40 +99,6 @@ const convertPortionQuantity = (
   return null;
 };
 
-const findMacro = (
-  items: any[],
-  codes: string[],
-  names: string[],
-) =>
-  items.find((item) => {
-    const code = String(item.code).toUpperCase();
-    const name = String(item.name).toUpperCase();
-
-    return (
-      codes.includes(code) ||
-      names.includes(name)
-    );
-  });
-
-const findNutrient = (
-  buckets: any[][],
-  codes: string[],
-  names: string[],
-) => {
-  for (const bucket of buckets) {
-    const match = findMacro(
-      bucket ?? [],
-      codes,
-      names,
-    );
-
-    if (match) {
-      return match;
-    }
-  }
-
-  return undefined;
-};
 
 /*
  * ============================================================================
@@ -913,183 +869,6 @@ export const RecipeDetailScreen = ({
           numericPortion * 100,
         ) / 100} ${cookedQuantityUnit}`;
 
-  const nutritionBreakdown =
-    recipe.nutrition
-      ? prepareNutritionBreakdown(
-          recipe.nutrition,
-          nutritionScale,
-        )
-      : null;
-
-  const showNutrition =
-    nutritionBreakdown
-      ? hasNutritionContent(
-          nutritionBreakdown,
-        )
-      : false;
-
-  const summaryItems =
-    nutritionBreakdown
-      ? getSummaryNutritionItems(
-          nutritionBreakdown,
-        )
-      : [];
-
-  const allBuckets = [
-    summaryItems,
-    nutritionBreakdown?.macros ??
-      [],
-    nutritionBreakdown?.micros ??
-      [],
-  ];
-
-  const caloriesItem =
-    findNutrient(
-      allBuckets,
-      [
-        'CALORIES',
-        'CALORIE',
-        'ENERGY',
-        'KCAL',
-      ],
-      [
-        'CALORIES',
-        'CALORIE',
-        'ENERGY',
-      ],
-    );
-
-  const proteinItem =
-    findNutrient(
-      allBuckets,
-      [
-        'PROTEIN',
-        'PROTEIN_G',
-      ],
-      ['PROTEIN'],
-    );
-
-  const carbsItem =
-    findNutrient(
-      allBuckets,
-      [
-        'CARBS',
-        'CARBOHYDRATES',
-        'CARBOHYDRATE',
-      ],
-      [
-        'CARBS',
-        'CARBOHYDRATES',
-        'CARBOHYDRATE',
-        'CARBOHYDRATE, BY DIFFERENCE',
-        'CARBOHYDRATES, BY DIFFERENCE',
-      ],
-    );
-
-  const fatItem =
-    findNutrient(
-      allBuckets,
-      [
-        'FAT',
-        'TOTAL_FAT',
-        'TOTAL FAT',
-      ],
-      [
-        'FAT',
-        'TOTAL FAT',
-      ],
-    );
-
-  const fiberItem =
-    findNutrient(
-      allBuckets,
-      [
-        'FIBER',
-        'DIETARY_FIBER',
-        'FIBRE',
-      ],
-      [
-        'FIBER',
-        'DIETARY FIBER',
-        'FIBER, TOTAL DIETARY',
-        'TOTAL DIETARY FIBER',
-        'FIBRE',
-      ],
-    );
-
-  const sugarItem =
-    findNutrient(
-      allBuckets,
-      [
-        'SUGAR',
-        'SUGARS',
-        'TOTAL_SUGARS',
-      ],
-      [
-        'SUGAR',
-        'SUGARS',
-        'TOTAL SUGARS',
-      ],
-    );
-
-  const sodiumItem =
-    findNutrient(
-      allBuckets,
-      [
-        'SODIUM',
-        'SODIUM_MG',
-      ],
-      ['SODIUM'],
-    );
-
-  const macroTotal =
-    (proteinItem?.amount ?? 0) +
-    (carbsItem?.amount ?? 0) +
-    (fatItem?.amount ?? 0);
-
-  const macroBars = [
-    {
-      item: proteinItem,
-      color: colors.protein,
-      label: 'Protein',
-    },
-    {
-      item: carbsItem,
-      color: colors.carbs,
-      label: 'Carbs',
-    },
-    {
-      item: fatItem,
-      color: colors.fats,
-      label: 'Fat',
-    },
-  ].filter(
-    (item) => item.item,
-  );
-
-  const highlightItems = [
-    {
-      item: fiberItem,
-      label: 'Fiber',
-      icon: Leaf,
-      color: colors.carbs,
-    },
-    {
-      item: sugarItem,
-      label: 'Sugar',
-      icon: Cookie,
-      color: colors.calories,
-    },
-    {
-      item: sodiumItem,
-      label: 'Sodium',
-      icon: Waves,
-      color: colors.info,
-    },
-  ].filter(
-    (item) => item.item,
-  );
-
   const completedStepCount =
     Object.values(
       completedSteps,
@@ -1477,72 +1256,14 @@ export const RecipeDetailScreen = ({
           </View>
 
           {/* ============================================================ */}
-          {/* RATING                                                       */}
           {/* ============================================================ */}
+          <RecipeRating
+            rating={recipe.rating}
+            userRating={userRating}
+            isPending={rateMutation.isPending}
+            onRate={handleSelectRating}
+          />
 
-          <View
-            style={styles.section}
-          >
-            <SectionTitle
-              title="Rate this recipe"
-              theme={theme}
-            />
-
-            <View
-              style={[
-                styles.ratingCard,
-                {
-                  backgroundColor: theme.colors.surface,
-                },
-              ]}
-            >
-              <View style={styles.ratingOverview}>
-                <View style={[styles.ratingScoreBadge, { backgroundColor: theme.colors.primary + '12' }]}>
-                  <Star size={18} color="#F59E0B" fill="#F59E0B" />
-                  <Text style={[styles.ratingScore, { color: theme.colors.text }]}>
-                    {recipe.rating?.average ? recipe.rating.average.toFixed(1) : '—'}
-                  </Text>
-                </View>
-                <View style={styles.ratingCopy}>
-                  <Text style={[styles.ratingTitle, { color: theme.colors.text }]}>
-                    {userRating ? `You rated this ${userRating}/5` : 'How was this recipe?'}
-                  </Text>
-                  <Text style={[styles.ratingHint, { color: theme.colors.textMuted }]}>
-                    {recipe.rating?.count ? `${recipe.rating.count} community rating${recipe.rating.count === 1 ? '' : 's'}` : 'Tap a star to share your rating'}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={[styles.ratingActionRow, { borderTopColor: theme.colors.border }]}>
-                <View style={styles.starsRow}>
-                  {[1, 2, 3, 4, 5].map((starIndex) => {
-                    const isFilled = userRating !== null && starIndex <= userRating;
-                    return (
-                      <TouchableOpacity
-                        key={starIndex}
-                        onPress={() => handleSelectRating(starIndex)}
-                        style={styles.starButton}
-                        disabled={rateMutation.isPending}
-                        activeOpacity={0.7}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Rate ${starIndex} out of 5`}
-                      >
-                        <Star
-                          size={28}
-                          color={isFilled ? '#F59E0B' : theme.colors.border}
-                          fill={isFilled ? '#F59E0B' : 'transparent'}
-                          strokeWidth={1.8}
-                        />
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-                {rateMutation.isPending ? <ActivityIndicator size="small" color={theme.colors.primary} /> : null}
-              </View>
-            </View>
-          </View>
-
-          {/* ============================================================ */}
           {/* PORTIONS                                                     */}
           {/* ============================================================ */}
 
@@ -2286,7 +2007,22 @@ export const RecipeDetailScreen = ({
 
       {/* ================================================================ */}
       {/* COOK MODE                                                        */}
-      {/* ================================================================ */}
+      {/* ============================================================ */}
+          <RecipeNutrition
+            nutrition={recipe.nutrition}
+            scale={nutritionScale}
+            portionLabel={portionLabel}
+            onSeeFullBreakdown={() =>
+              navigation.navigate('NutritionDetail', {
+                recipeName: recipe.name,
+                nutrition: recipe.nutrition,
+                scale: nutritionScale,
+                portionLabel,
+              })
+            }
+          />
+
+          {/* ================================================================ */}
 
       <RecipeRecordingFlow
         visible={recordingVisible}
