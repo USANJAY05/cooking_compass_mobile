@@ -687,8 +687,7 @@ export const CartScreen = () => {
             {
               backgroundColor:
                 theme.colors.surface,
-              borderColor:
-                theme.colors.border,
+              
             },
           ]}
         >
@@ -1237,7 +1236,6 @@ const styles = StyleSheet.create({
   // ==========================================================
 
   shoppingPeriodSection: {
-    borderWidth: 1,
     borderRadius: 18,
 
     paddingHorizontal: 14,

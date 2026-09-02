@@ -54,7 +54,7 @@ export const AboutScreen = ({ navigation }: any) => {
             styles.brandCard,
             {
               backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.border,
+              
             },
           ]}
         >
@@ -169,7 +169,7 @@ export const AboutScreen = ({ navigation }: any) => {
             styles.infoCard,
             {
               backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.border,
+              
             },
           ]}
         >
@@ -243,7 +243,7 @@ export const AboutScreen = ({ navigation }: any) => {
             styles.resourceCard,
             {
               backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.border,
+              
             },
           ]}
         >
@@ -476,7 +476,6 @@ const styles = StyleSheet.create({
   },
 
   brandCard: {
-    borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 22,
     paddingVertical: 28,
@@ -553,7 +552,6 @@ const styles = StyleSheet.create({
   },
 
   infoCard: {
-    borderWidth: 1,
     borderRadius: 19,
     paddingHorizontal: 16,
     marginBottom: 24,
@@ -585,7 +583,6 @@ const styles = StyleSheet.create({
   },
 
   resourceCard: {
-    borderWidth: 1,
     borderRadius: 19,
     overflow: 'hidden',
     marginBottom: 30,
