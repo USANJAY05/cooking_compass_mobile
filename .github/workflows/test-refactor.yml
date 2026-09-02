@@ -1,0 +1,12 @@
+name: Test Refactor Runner
+
+on:
+  push:
+    branches:
+      - refactor/recipe-detail-components
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "runner works"
