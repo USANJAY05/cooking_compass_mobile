@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev
-      - feature/completed
 
   workflow_dispatch:
 
@@ -68,4 +66,3 @@ jobs:
           name: muveth-kitchen-android-apk
           path: android/app/build/outputs/apk/release/*.apk
           if-no-files-found: error
-          
