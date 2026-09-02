@@ -1137,8 +1137,6 @@ export const RecipeDetailScreen = ({
             {
               backgroundColor:
                 theme.colors.surface,
-              borderColor:
-                theme.colors.border,
             },
           ]}
         >
@@ -1359,7 +1357,7 @@ export const RecipeDetailScreen = ({
           ) : null}
 
           {(recipeCategoryNames.length > 0 || recipeTagLabels.length > 0) ? (
-            <View style={[styles.recipeMetaCard, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+            <View style={[styles.recipeMetaCard, { backgroundColor: theme.colors.surface, }]}>
               {recipeCategoryNames.length > 0 ? (
                 <View style={styles.recipeMetaGroup}>
                   <Text style={[styles.recipeMetaLabel, { color: theme.colors.textMuted }]}>Categories</Text>
@@ -1398,8 +1396,6 @@ export const RecipeDetailScreen = ({
               {
                 backgroundColor:
                   theme.colors.surface,
-                borderColor:
-                  theme.colors.border,
               },
             ]}
           >
@@ -1497,7 +1493,6 @@ export const RecipeDetailScreen = ({
                 styles.ratingCard,
                 {
                   backgroundColor: theme.colors.surface,
-                  borderColor: theme.colors.border,
                 },
               ]}
             >
@@ -2123,8 +2118,6 @@ export const RecipeDetailScreen = ({
                       {
                         backgroundColor:
                           theme.colors.surface,
-                        borderColor:
-                          theme.colors.border,
                       },
                       isDone && styles.completedCard,
                     ]}
@@ -2213,7 +2206,6 @@ export const RecipeDetailScreen = ({
                               styles.tipBox,
                               {
                                 backgroundColor: theme.colors.surfaceSecondary,
-                                borderColor: theme.colors.border,
                               },
                             ]}
                           >
@@ -2642,7 +2634,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '100%',
     overflow: 'hidden',
-    borderBottomWidth: 1,
   },
 
   heroImage: {
@@ -2750,12 +2741,12 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  recipeMetaCard: { borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 16 },
+  recipeMetaCard: { borderRadius: 14, padding: 12, marginBottom: 16 },
   recipeMetaGroup: {},
   recipeMetaGroupSpacing: { marginTop: 12 },
   recipeMetaLabel: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 7 },
   recipeMetaChipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 7 },
-  recipeMetaChip: { borderWidth: 1, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 6 },
+  recipeMetaChip: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 6 },
   recipeMetaChipText: { fontSize: 12, fontWeight: '700' },
   description: {
     fontSize: 14,
@@ -2775,8 +2766,6 @@ const styles = StyleSheet.create({
 
     flexDirection: 'row',
     alignItems: 'center',
-
-    borderWidth: 1,
     borderRadius: 8,
 
     paddingVertical: 13,
@@ -2847,7 +2836,6 @@ const styles = StyleSheet.create({
    */
 
   ratingCard: {
-    borderWidth: 1,
     borderRadius: 16,
     overflow: 'hidden',
   },
@@ -2930,7 +2918,6 @@ const styles = StyleSheet.create({
    */
 
   nutritionCard: {
-    borderWidth: 1,
     borderRadius: 16,
     padding: 12,
     overflow: 'hidden',
@@ -3069,7 +3056,6 @@ const styles = StyleSheet.create({
    */
 
   ingredientCard: {
-    borderWidth: 1,
     borderRadius: 8,
     overflow: 'hidden',
   },
@@ -3140,7 +3126,6 @@ const styles = StyleSheet.create({
    */
 
   instructionCard: {
-    borderWidth: 1,
     borderRadius: 8,
 
     padding: 14,
@@ -3261,7 +3246,6 @@ const styles = StyleSheet.create({
   },
 
   emptyCard: {
-    borderWidth: 1,
     borderRadius: 8,
   },
 

@@ -465,9 +465,7 @@ export const RoutineCalendar: React.FC<
             backgroundColor:
               theme.colors.surface,
 
-            borderColor:
-              theme.colors.primary +
-              '24',
+            
           },
         ]}
       >
@@ -594,9 +592,7 @@ export const RoutineCalendar: React.FC<
           backgroundColor:
             theme.colors.surface,
 
-          borderColor:
-            theme.colors.primary +
-            '24',
+          
         },
       ]}
     >
@@ -797,8 +793,6 @@ const styles = StyleSheet.create({
     width: '100%',
 
     position: 'relative',
-
-    borderWidth: 1,
     borderRadius: 8,
 
     overflow: 'hidden',
