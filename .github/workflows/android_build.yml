@@ -38,22 +38,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/components/RecipeCookingFlow.tsx
           git commit -m "fix: remove decorative Start Cooking borders"
-
-      - name: Restore build workflow configuration
-        if: github.ref == 'refs/heads/bugfix/recipe-detail-components'
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('.github/workflows/android_build.yml')
-          s = p.read_text()
-          s = s.replace("""      - main\n      - bugfix/recipe-detail-components\n""", """      - main\n""")
-          s = s.replace("""\npermissions:\n  contents: write\n""", "")
-          marker = """      - name: Apply Start Cooking border cleanup\n        if: github.ref == 'refs/heads/bugfix/recipe-detail-components'\n        run: |\n          python - <<'PY'\n          from pathlib import Path\n          p = Path('src/components/RecipeCookingFlow.tsx')\n          s = p.read_text()\n          s = s.replace(\"\"\"                  backgroundColor:\\n                    theme.colors\\n                      .surface,\\n                  borderColor:\\n                    theme.colors\\n                      .border,\\n\"\"\", \"\"\"                  backgroundColor:\\n                    theme.colors\\n                      .surface,\\n\"\"\", 2)\n          s = s.replace(\"\"\"  timerCard: {\\n    minHeight: 90,\\n\\n    borderWidth: 1,\\n    borderRadius: 8,\\n\"\"\", \"\"\"  timerCard: {\\n    minHeight: 90,\\n\\n    borderRadius: 8,\\n\"\"\")\n          s = s.replace(\"\"\"  cookIngredientCard: {\\n    marginTop: 18,\\n    borderWidth: 1,\\n    borderRadius: 8,\\n\"\"\", \"\"\"  cookIngredientCard: {\\n    marginTop: 18,\\n    borderRadius: 8,\\n\"\"\")\n          p.write_text(s)\n          PY\n          git config user.name \"github-actions[bot]\"\n          git config user.email \"41898282+github-actions[bot]@users.noreply.github.com\"\n          git add src/components/RecipeCookingFlow.tsx\n          git commit -m \"fix: remove decorative Start Cooking borders\"\n\n"""
-          s = s.replace(marker, '')
-          p.write_text(s)
-          PY
-          git add .github/workflows/android_build.yml
-          git commit -m "chore: restore Android build workflow"
           git push origin HEAD:bugfix/recipe-detail-components
 
       - name: Set up Node.js
