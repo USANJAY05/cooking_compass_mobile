@@ -29,6 +29,7 @@ import {
   Play,
   Pencil,
   Info,
+  Wheat
 } from 'lucide-react-native';
 
 import {
@@ -940,7 +941,7 @@ export const RecipeDetailScreen = ({
                 },
               ]}
             >
-              <Leaf
+              <Wheat
                 size={32}
                 color={
                   theme.colors
@@ -1322,296 +1323,19 @@ export const RecipeDetailScreen = ({
           {/* NUTRITION                                                    */}
           {/* ============================================================ */}
 
-          {showNutrition &&
-          nutritionBreakdown ? (
-            <View
-              style={styles.section}
-            >
-              <SectionHeader
-                title="Nutrition"
-                hint={portionLabel}
-                theme={theme}
-              />
-
-              <View
-                style={[
-                  styles.nutritionCard,
-                  {
-                    backgroundColor:
-                      theme.colors
-                        .surface,
-                    borderColor:
-                      theme.colors
-                        .border,
-                  },
-                ]}
-              >
-                {caloriesItem ? (
-                  <View
-                    style={
-                      styles.calorieRow
-                    }
-                  >
-                    <View
-                      style={[
-                        styles.nutritionIcon,
-                        {
-                          backgroundColor:
-                            colors.calories +
-                            '15',
-                        },
-                      ]}
-                    >
-                      <Flame
-                        size={20}
-                        color={
-                          colors.calories
-                        }
-                      />
-                    </View>
-
-                    <View
-                      style={
-                        styles.flexOne
-                      }
-                    >
-                      <Text
-                        style={[
-                          styles.calorieValue,
-                          {
-                            color:
-                              theme
-                                .colors
-                                .text,
-                          },
-                        ]}
-                      >
-                        {formatNutritionAmount(
-                          caloriesItem.amount,
-                          caloriesItem.unit,
-                        )}
-                      </Text>
-
-                      <Text
-                        style={[
-                          styles.calorieLabel,
-                          {
-                            color:
-                              theme
-                                .colors
-                                .textMuted,
-                          },
-                        ]}
-                      >
-                        Total energy
-                      </Text>
-                    </View>
-                  </View>
-                ) : null}
-
-                {macroBars.length >
-                  0 &&
-                macroTotal > 0 ? (
-                  <View
-                    style={[
-                      styles.macroBarTrack,
-                      {
-                        backgroundColor:
-                          theme.colors
-                            .border,
-                      },
-                    ]}
-                  >
-                    {macroBars.map(
-                      (
-                        macro,
-                        index,
-                      ) => (
-                        <View
-                          key={
-                            index
-                          }
-                          style={{
-                            flex:
-                              macro
-                                .item!
-                                .amount /
-                              macroTotal,
-                            backgroundColor:
-                              macro.color,
-                          }}
-                        />
-                      ),
-                    )}
-                  </View>
-                ) : null}
-
-                <View style={styles.nutritionGrid}>
-                  {proteinItem ? (
-                    <View style={styles.nutritionGridItem}>
-                      <MacroItem
-                        icon={
-                          <Beef
-                            size={14}
-                            color={colors.protein}
-                          />
-                        }
-                        value={formatNutritionAmount(
-                          proteinItem.amount,
-                          proteinItem.unit,
-                        )}
-                        label="Protein"
-                        theme={theme}
-                      />
-                    </View>
-                  ) : null}
-
-                  {carbsItem ? (
-                    <View style={styles.nutritionGridItem}>
-                      <MacroItem
-                        icon={
-                          <Wheat
-                            size={14}
-                            color={colors.carbs}
-                          />
-                        }
-                        value={formatNutritionAmount(
-                          carbsItem.amount,
-                          carbsItem.unit,
-                        )}
-                        label="Carbs"
-                        theme={theme}
-                      />
-                    </View>
-                  ) : null}
-
-                  {fatItem ? (
-                    <View style={styles.nutritionGridItem}>
-                      <MacroItem
-                        icon={
-                          <Droplets
-                            size={14}
-                            color={colors.fats}
-                          />
-                        }
-                        value={formatNutritionAmount(
-                          fatItem.amount,
-                          fatItem.unit,
-                        )}
-                        label="Fat"
-                        theme={theme}
-                      />
-                    </View>
-                  ) : null}
-
-                  {highlightItems.map((highlight, index) => {
-                    const Icon = highlight.icon;
-
-                    return (
-                      <View
-                        key={index}
-                        style={styles.nutritionGridItem}
-                      >
-                        <View
-                          style={[
-                            styles.highlightIcon,
-                            {
-                              backgroundColor:
-                                highlight.color + '15',
-                            },
-                          ]}
-                        >
-                          <Icon
-                            size={14}
-                            color={highlight.color}
-                          />
-                        </View>
-
-                        <View
-                          style={styles.nutritionText}
-                        >
-                          <Text
-                            style={[
-                              styles.highlightValue,
-                              {
-                                color:
-                                  theme.colors.text,
-                              },
-                            ]}
-                          >
-                            {formatNutritionAmount(
-                              highlight.item!.amount,
-                              highlight.item!.unit,
-                            )}
-                          </Text>
-
-                          <Text
-                            style={[
-                              styles.highlightLabel,
-                              {
-                                color:
-                                  theme.colors.textMuted,
-                              },
-                            ]}
-                          >
-                            {highlight.label}
-                          </Text>
-                        </View>
-                      </View>
-                    );
-                  })}
-                </View>
-
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={[
-                    styles.fullNutritionButton,
-                    {
-                      borderTopColor:
-                        theme.colors
-                          .border,
-                    },
-                  ]}
-                  onPress={() =>
-                    navigation.navigate(
-                      'NutritionDetail',
-                      {
-                        recipeName:
-                          recipe.name,
-                        nutrition:
-                          recipe.nutrition,
-                        scale:
-                          nutritionScale,
-                        portionLabel,
-                      },
-                    )
-                  }
-                >
-                  <Text
-                    style={[
-                      styles.fullNutritionText,
-                      {
-                        color:
-                          theme.colors
-                            .primary,
-                      },
-                    ]}
-                  >
-                    See full nutrition
-                    breakdown
-                  </Text>
-
-                  <ChevronRight
-                    size={17}
-                    color={
-                      theme.colors
-                        .primary
-                    }
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : null}
+          <RecipeNutrition
+            nutrition={recipe.nutrition}
+            scale={nutritionScale}
+            portionLabel={portionLabel}
+            onSeeFullBreakdown={() =>
+              navigation.navigate('NutritionDetail', {
+                recipeName: recipe.name,
+                nutrition: recipe.nutrition,
+                scale: nutritionScale,
+                portionLabel,
+              })
+            }
+          />
 
           {/* ============================================================ */}
           {/* INGREDIENTS                                                   */}
@@ -2008,20 +1732,6 @@ export const RecipeDetailScreen = ({
       {/* ================================================================ */}
       {/* COOK MODE                                                        */}
       {/* ============================================================ */}
-          <RecipeNutrition
-            nutrition={recipe.nutrition}
-            scale={nutritionScale}
-            portionLabel={portionLabel}
-            onSeeFullBreakdown={() =>
-              navigation.navigate('NutritionDetail', {
-                recipeName: recipe.name,
-                nutrition: recipe.nutrition,
-                scale: nutritionScale,
-                portionLabel,
-              })
-            }
-          />
-
           {/* ================================================================ */}
 
       <RecipeRecordingFlow
