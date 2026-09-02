@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Flame, Beef, Wheat, Droplets, Leaf, Cookie, Waves, ChevronRight } from 'lucide-react-native';
+import { Flame, Beef, Wheat, Droplets, Leaf as LeafIcon, Cookie, Waves, ChevronRight } from 'lucide-react-native';
 import { useTheme, colors } from '../../theme';
 import { NutritionData, prepareNutritionBreakdown, getSummaryNutritionItems, hasNutritionContent, formatNutritionAmount } from '../../utils/nutrition';
 
@@ -42,7 +42,7 @@ export const RecipeNutrition: React.FC<RecipeNutritionProps> = ({ nutrition, sca
   const sodiumItem = findNutrient(allBuckets, ['SODIUM', 'SODIUM_MG'], ['SODIUM']);
   const macroTotal = (proteinItem?.amount ?? 0) + (carbsItem?.amount ?? 0) + (fatItem?.amount ?? 0);
   const macroBars = [{ item: proteinItem, color: colors.protein }, { item: carbsItem, color: colors.carbs }, { item: fatItem, color: colors.fats }].filter((item) => item.item);
-  const highlightItems = [{ item: fiberItem, label: 'Fiber', icon: Leaf, color: colors.carbs }, { item: sugarItem, label: 'Sugar', icon: Cookie, color: colors.calories }, { item: sodiumItem, label: 'Sodium', icon: Waves, color: colors.info }].filter((item) => item.item);
+  const highlightItems = [{ item: fiberItem, label: 'Fiber', icon: LeafIcon, color: colors.carbs }, { item: sugarItem, label: 'Sugar', icon: Cookie, color: colors.calories }, { item: sodiumItem, label: 'Sodium', icon: Waves, color: colors.info }].filter((item) => item.item);
 
   return (
     <View style={styles.section}>
