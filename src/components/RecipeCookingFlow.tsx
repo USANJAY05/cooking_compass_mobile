@@ -95,9 +95,6 @@ export const RecipeCookingFlow = ({
                   backgroundColor:
                     theme.colors
                       .surface,
-                  borderColor:
-                    theme.colors
-                      .border,
                 },
               ]}
             >
@@ -200,9 +197,6 @@ export const RecipeCookingFlow = ({
                   backgroundColor:
                     theme.colors
                       .surface,
-                  borderColor:
-                    theme.colors
-                      .border,
                 },
               ]}
             >
@@ -964,7 +958,6 @@ const styles = StyleSheet.create({
   timerCard: {
     minHeight: 90,
 
-    borderWidth: 1,
     borderRadius: 8,
 
     padding: 14,
@@ -986,7 +979,6 @@ const styles = StyleSheet.create({
   },
   cookIngredientCard: {
     marginTop: 18,
-    borderWidth: 1,
     borderRadius: 8,
     overflow: 'hidden',
   },
