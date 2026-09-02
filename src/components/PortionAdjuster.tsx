@@ -122,7 +122,6 @@ export const PortionAdjuster: React.FC<
         styles.container,
         {
           backgroundColor: theme.colors.surface,
-          borderColor: theme.colors.border,
         },
       ]}
     >
@@ -335,7 +334,6 @@ export const PortionAdjuster: React.FC<
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
     borderRadius: 16,
     padding: 16,
     overflow: 'hidden',
