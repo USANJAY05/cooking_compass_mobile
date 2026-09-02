@@ -33,6 +33,7 @@ import {
 
 import {
   useRecipeDetail,
+  useRateRecipe,
   useUpdateRecipe,
 } from '../api/recipes';
 import { useCategories } from '../api/categories';
