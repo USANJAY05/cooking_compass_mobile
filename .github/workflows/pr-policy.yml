@@ -1,0 +1,43 @@
+name: PR Policy
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate-branch:
+    name: Validate PR branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate target and source branch
+        env:
+          BASE: ${{ github.event.pull_request.base.ref }}
+          HEAD: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [ "$BASE" = "dev" ]; then
+            case "$HEAD" in
+              feature/*|bugfix/*)
+                echo "Valid feature/bugfix PR: $HEAD -> dev"
+                ;;
+              *)
+                echo "PRs into dev must come from feature/* or bugfix/* branches."
+                exit 1
+                ;;
+            esac
+          elif [ "$BASE" = "staging" ]; then
+            if [ "$HEAD" != "dev" ]; then
+              echo "Only dev can promote into staging."
+              exit 1
+            fi
+          elif [ "$BASE" = "main" ]; then
+            if [ "$HEAD" != "staging" ]; then
+              echo "Only staging can promote into main."
+              exit 1
+            fi
+          else
+            echo "Unsupported PR target: $BASE"
+            exit 1
+          fi
