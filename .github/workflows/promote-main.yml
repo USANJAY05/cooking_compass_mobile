@@ -1,0 +1,36 @@
+name: Promote Staging to Main
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create production promotion PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          EXISTING=$(gh pr list --repo "${{ github.repository }}" --base main --head staging --state open --json number --jq 'length')
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "A staging -> main PR is already open."
+            exit 0
+          fi
+
+          if gh api "repos/${{ github.repository }}/compare/main...staging" --jq '.ahead_by' | grep -q '^0$'; then
+            echo "No new commits to promote."
+            exit 0
+          fi
+
+          gh pr create \
+            --repo "${{ github.repository }}" \
+            --base main \
+            --head staging \
+            --title "chore: promote staging to main" \
+            --body "Scheduled Sunday production promotion from staging. Merge after release validation."
