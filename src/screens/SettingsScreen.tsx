@@ -37,10 +37,6 @@ export const SettingsScreen = ({ navigation }: any) => {
   const { user } = useAuth();
   const { theme } = useTheme();
 
-  // =========================================================
-  // PREFERENCE SETTINGS
-  // =========================================================
-
   const preferenceRows: SettingsRow[] = [
     {
       title: 'Appearance',
@@ -61,10 +57,6 @@ export const SettingsScreen = ({ navigation }: any) => {
       route: 'InteractiveCookingSettings',
     },
   ];
-
-  // =========================================================
-  // ACCOUNT SETTINGS
-  // =========================================================
 
   const accountRows: SettingsRow[] = [
     {
@@ -87,10 +79,6 @@ export const SettingsScreen = ({ navigation }: any) => {
     },
   ];
 
-  // =========================================================
-  // USER PROFILE
-  // =========================================================
-
   const displayName =
     user?.name ||
     user?.username ||
@@ -107,10 +95,6 @@ export const SettingsScreen = ({ navigation }: any) => {
 
   const initials =
     displayName.trim().charAt(0).toUpperCase() || 'U';
-
-  // =========================================================
-  // RENDER SETTINGS GROUP
-  // =========================================================
 
   const renderGroup = (
     title: string,
@@ -133,7 +117,6 @@ export const SettingsScreen = ({ navigation }: any) => {
           styles.groupCard,
           {
             backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.border,
           },
         ]}
       >
@@ -149,8 +132,6 @@ export const SettingsScreen = ({ navigation }: any) => {
                 }
                 style={styles.row}
               >
-                {/* ICON */}
-
                 <View
                   style={[
                     styles.iconBox,
@@ -166,8 +147,6 @@ export const SettingsScreen = ({ navigation }: any) => {
                     strokeWidth={2.1}
                   />
                 </View>
-
-                {/* TEXT */}
 
                 <View style={styles.rowText}>
                   <Text
@@ -195,8 +174,6 @@ export const SettingsScreen = ({ navigation }: any) => {
                   </Text>
                 </View>
 
-                {/* CHEVRON */}
-
                 <View
                   style={[
                     styles.chevronBox,
@@ -213,8 +190,6 @@ export const SettingsScreen = ({ navigation }: any) => {
                   />
                 </View>
               </TouchableOpacity>
-
-              {/* DIVIDER */}
 
               {index < rows.length - 1 ? (
                 <View
@@ -233,10 +208,6 @@ export const SettingsScreen = ({ navigation }: any) => {
       </View>
     </View>
   );
-
-  // =========================================================
-  // RENDER
-  // =========================================================
 
   return (
     <View
@@ -263,18 +234,12 @@ export const SettingsScreen = ({ navigation }: any) => {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* ===================================================
-            PROFILE
-        =================================================== */}
-
         <View
           style={[
             styles.profileCard,
             {
               backgroundColor:
                 theme.colors.surface,
-              borderColor:
-                theme.colors.border,
             },
           ]}
         >
@@ -341,27 +306,15 @@ export const SettingsScreen = ({ navigation }: any) => {
           ) : null}
         </View>
 
-        {/* ===================================================
-            PREFERENCES
-        =================================================== */}
-
         {renderGroup(
           'PREFERENCES',
           preferenceRows,
         )}
 
-        {/* ===================================================
-            ACCOUNT
-        =================================================== */}
-
         {renderGroup(
           'ACCOUNT',
           accountRows,
         )}
-
-        {/* ===================================================
-            FOOTER
-        =================================================== */}
 
         <Text
           style={[
@@ -379,34 +332,22 @@ export const SettingsScreen = ({ navigation }: any) => {
   );
 };
 
-// ===========================================================
-// STYLES
-// ===========================================================
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   content: {
     paddingHorizontal: 18,
     paddingTop: 16,
     paddingBottom: 42,
   },
-
-  // =========================================================
-  // PROFILE
-  // =========================================================
-
   profileCard: {
-    borderWidth: 1,
     borderRadius: 24,
     paddingVertical: 24,
     paddingHorizontal: 18,
     alignItems: 'center',
     marginBottom: 26,
   },
-
   profilePhotoRing: {
     width: 96,
     height: 96,
@@ -416,13 +357,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 13,
   },
-
   profilePhoto: {
     width: 88,
     height: 88,
     borderRadius: 44,
   },
-
   initialAvatar: {
     width: 88,
     height: 88,
@@ -430,34 +369,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   initials: {
     color: '#FFFFFF',
     fontSize: 34,
     fontWeight: '900',
   },
-
   profileName: {
     fontSize: 20,
     fontWeight: '900',
     letterSpacing: -0.3,
     maxWidth: '90%',
   },
-
   profileUsername: {
     fontSize: 13,
     marginTop: 4,
     maxWidth: '90%',
   },
-
-  // =========================================================
-  // GROUP
-  // =========================================================
-
   group: {
     marginBottom: 22,
   },
-
   groupTitle: {
     fontSize: 10.5,
     fontWeight: '900',
@@ -465,17 +395,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginLeft: 4,
   },
-
   groupCard: {
-    borderWidth: 1,
     borderRadius: 19,
     overflow: 'hidden',
   },
-
-  // =========================================================
-  // ROW
-  // =========================================================
-
   row: {
     minHeight: 76,
     paddingHorizontal: 14,
@@ -483,7 +406,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   iconBox: {
     width: 43,
     height: 43,
@@ -492,24 +414,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 12,
   },
-
   rowText: {
     flex: 1,
     minWidth: 0,
     paddingRight: 10,
   },
-
   rowTitle: {
     fontSize: 15,
     fontWeight: '800',
     marginBottom: 3,
   },
-
   rowSubtitle: {
     fontSize: 12.2,
     lineHeight: 17,
   },
-
   chevronBox: {
     width: 30,
     height: 30,
@@ -517,16 +435,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   divider: {
     height: 1,
     marginLeft: 69,
   },
-
-  // =========================================================
-  // FOOTER
-  // =========================================================
-
   footer: {
     textAlign: 'center',
     fontSize: 9.5,

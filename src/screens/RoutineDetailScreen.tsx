@@ -80,12 +80,6 @@ export const RoutineDetailScreen = ({
     });
   }, [routine?.name, navigation, routineId, theme.colors.primary]);
 
-  /*
-   * ============================================================
-   * LOADING
-   * ============================================================
-   */
-
   if (isLoading) {
     return (
       <View
@@ -106,12 +100,6 @@ export const RoutineDetailScreen = ({
       </View>
     );
   }
-
-  /*
-   * ============================================================
-   * ERROR
-   * ============================================================
-   */
 
   if (!routine) {
     return (
@@ -190,12 +178,6 @@ export const RoutineDetailScreen = ({
     );
   }
 
-  /*
-   * ============================================================
-   * DATA
-   * ============================================================
-   */
-
   const frequency =
     routine.recurrence
       ?.frequency || 'WEEKLY';
@@ -218,12 +200,6 @@ export const RoutineDetailScreen = ({
   const canExpand =
     description.length > 100;
 
-  /*
-   * ============================================================
-   * SCREEN
-   * ============================================================
-   */
-
   return (
     <ScrollView
       style={[
@@ -240,10 +216,6 @@ export const RoutineDetailScreen = ({
         false
       }
     >
-      {/* ====================================================== */}
-      {/* HEADER */}
-      {/* ====================================================== */}
-
       <View style={styles.header}>
         <Text
           style={[
@@ -329,10 +301,6 @@ export const RoutineDetailScreen = ({
         ) : null}
       </View>
 
-      {/* ====================================================== */}
-      {/* META */}
-      {/* ====================================================== */}
-
       <View style={styles.metaRow}>
         <View
           style={[
@@ -402,10 +370,6 @@ export const RoutineDetailScreen = ({
         ) : null}
       </View>
 
-      {/* ====================================================== */}
-      {/* DATE */}
-      {/* ====================================================== */}
-
       {routine.recurrence
         ?.start_date ? (
         <View
@@ -441,10 +405,6 @@ export const RoutineDetailScreen = ({
         </View>
       ) : null}
 
-      {/* ====================================================== */}
-      {/* SCHEDULE */}
-      {/* ====================================================== */}
-
       {frequency ===
         'WEEKLY' &&
         !isSpecificDate &&
@@ -457,8 +417,6 @@ export const RoutineDetailScreen = ({
               {
                 backgroundColor:
                   theme.colors.surface,
-                borderColor:
-                  theme.colors.border,
               },
             ]}
           >
@@ -560,10 +518,6 @@ export const RoutineDetailScreen = ({
           </View>
         )}
 
-      {/* ====================================================== */}
-      {/* RECIPES HEADER */}
-      {/* ====================================================== */}
-
       <View
         style={
           styles.recipesHeader
@@ -615,10 +569,6 @@ export const RoutineDetailScreen = ({
         </Text>
       </View>
 
-      {/* ====================================================== */}
-      {/* RECIPES */}
-      {/* ====================================================== */}
-
       {recipes.length > 0 ? (
         <View style={styles.recipeList}>
           {recipes.map(
@@ -633,16 +583,10 @@ export const RoutineDetailScreen = ({
                   {
                     backgroundColor:
                       theme.colors.surface,
-                    borderColor:
-                      theme.colors.border,
                   },
                   index === 0 && styles.recipeRowFirst,
                   index === recipes.length - 1 &&
                     styles.recipeRowLast,
-                  index < recipes.length - 1 && {
-                    borderBottomWidth:
-                      StyleSheet.hairlineWidth,
-                  },
                 ]}
                 onPress={() => {
                   const quantityUnit = String(
@@ -663,9 +607,6 @@ export const RoutineDetailScreen = ({
                     Number.isFinite(quantityValue) &&
                     quantityValue > 0;
 
-                  // A routine item without a real serving/quantity value
-                  // cannot be opened as a portion-aware recipe. This avoids
-                  // silently showing the recipe's default portion.
                   if (!quantityUnit || !hasValidQuantity) {
                     return;
                   }
@@ -686,8 +627,6 @@ export const RoutineDetailScreen = ({
                 }}
                 activeOpacity={0.7}
               >
-                {/* ICON */}
-
                 <View
                   style={[
                     styles.recipeIcon,
@@ -706,8 +645,6 @@ export const RoutineDetailScreen = ({
                     strokeWidth={2}
                   />
                 </View>
-
-                {/* INFO */}
 
                 <View
                   style={
@@ -765,8 +702,6 @@ export const RoutineDetailScreen = ({
             {
               backgroundColor:
                 theme.colors.surface,
-              borderColor:
-                theme.colors.border,
             },
           ]}
         >
@@ -798,137 +733,80 @@ export const RoutineDetailScreen = ({
 };
 
 const styles = StyleSheet.create({
-  /*
-   * ============================================================
-   * SCREEN
-   * ============================================================
-   */
-
   container: {
     flex: 1,
   },
-
   content: {
     paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 36,
   },
-
-  /*
-   * ============================================================
-   * CENTER
-   * ============================================================
-   */
-
   center: {
     flex: 1,
-
     alignItems: 'center',
-
     justifyContent: 'center',
-
     paddingHorizontal: 30,
   },
-
-  /*
-   * ============================================================
-   * ERROR
-   * ============================================================
-   */
-
   errorIcon: {
     width: 46,
     height: 46,
     borderRadius: 12,
-
     alignItems: 'center',
     justifyContent: 'center',
-
     marginBottom: 12,
   },
-
   errorTitle: {
     fontSize: 16,
     lineHeight: 21,
-
     fontWeight: '700',
-
     marginBottom: 4,
-
     textAlign: 'center',
   },
-
   errorMessage: {
     fontSize: 13,
     lineHeight: 18,
-
     marginBottom: 16,
-
     textAlign: 'center',
   },
-
   retryButton: {
     paddingHorizontal: 20,
     paddingVertical: 9,
-
     borderRadius: 12,
   },
-
   retryText: {
     color: '#FFFFFF',
-
     fontSize: 13,
-
     fontWeight: '700',
   },
-
-  /*
-   * ============================================================
-   * HEADER
-   * ============================================================
-   */
-
   header: {
     marginBottom: 14,
   },
-
   title: {
     fontSize: 24,
     lineHeight: 30,
     fontWeight: '800',
     marginBottom: 7,
   },
-
   descriptionArea: {
     paddingRight: 4,
   },
-
   description: {
     fontSize: 13,
     lineHeight: 19,
-
     fontWeight: '400',
   },
-
   viewMoreButton: {
     flexDirection: 'row',
-
     alignItems: 'center',
-
     alignSelf: 'flex-start',
-
     marginTop: 3,
-
     gap: 1,
   },
-
   viewMoreText: {
     fontSize: 11.5,
     lineHeight: 16,
-
     fontWeight: '700',
   },
-
   chevronUp: {
     transform: [
       {
@@ -936,291 +814,164 @@ const styles = StyleSheet.create({
       },
     ],
   },
-
-  /*
-   * ============================================================
-   * META
-   * ============================================================
-   */
-
   metaRow: {
     flexDirection: 'row',
-
     alignItems: 'center',
-
     gap: 7,
-
     marginBottom: 8,
   },
-
   metaItem: {
     height: 28,
-
     flexDirection: 'row',
-
     alignItems: 'center',
-
     paddingHorizontal: 1,
-
     gap: 5,
   },
-
   metaText: {
     fontSize: 11,
-
     lineHeight: 14,
-
     fontWeight: '700',
   },
-
   statusItem: {
     minHeight: 28,
-
     alignItems: 'center',
-
     justifyContent: 'center',
-
     paddingHorizontal: 8,
-
     borderRadius: 12,
-
     borderWidth: 1,
   },
-
   statusText: {
     fontSize: 10.5,
-
     lineHeight: 14,
-
     fontWeight: '600',
   },
-
-  /*
-   * ============================================================
-   * DATE
-   * ============================================================
-   */
-
   dateRow: {
     flexDirection: 'row',
-
     alignItems: 'center',
-
     gap: 5,
-
     marginBottom: 15,
   },
-
   dateText: {
     fontSize: 11.5,
-
     lineHeight: 16,
-
     fontWeight: '500',
   },
-
-  /*
-   * ============================================================
-   * SCHEDULE
-   * ============================================================
-   */
-
   schedule: {
-    borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 14,
     marginBottom: 20,
     borderRadius: 12,
   },
-
   scheduleTop: {
     flexDirection: 'row',
-
     alignItems: 'center',
-
     justifyContent:
       'space-between',
-
     marginBottom: 9,
   },
-
   scheduleTitle: {
     fontSize: 13,
-
     lineHeight: 18,
-
     fontWeight: '700',
   },
-
   scheduleCount: {
     fontSize: 10.5,
-
     lineHeight: 14,
-
     fontWeight: '600',
   },
-
   days: {
     flexDirection: 'row',
-
     gap: 5,
   },
-
   day: {
     flex: 1,
-
     height: 32,
-
     borderRadius: 12,
-
     borderWidth: 1,
-
     alignItems: 'center',
-
     justifyContent: 'center',
   },
-
   dayText: {
     fontSize: 10.5,
-
     lineHeight: 14,
-
     fontWeight: '700',
   },
-
-  /*
-   * ============================================================
-   * RECIPES HEADER
-   * ============================================================
-   */
-
   recipesHeader: {
     flexDirection: 'row',
-
     alignItems: 'center',
-
     justifyContent:
       'space-between',
-
     marginBottom: 7,
-
     paddingHorizontal: 1,
   },
-
   recipesTitle: {
     fontSize: 16,
-
     lineHeight: 21,
-
     fontWeight: '800',
   },
-
   recipeSubtitle: {
     fontSize: 10.5,
-
     lineHeight: 15,
-
     marginTop: 1,
   },
-
   recipeCount: {
     fontSize: 12,
-
     lineHeight: 16,
-
     fontWeight: '700',
   },
-
-  /*
-   * ============================================================
-   * RECIPE LIST
-   * ============================================================
-   */
-
   recipeList: {
     paddingHorizontal: 0,
     gap: 8,
   },
-
   recipeRowFirst: {
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
-
   recipeRowLast: {
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
   },
-
   recipeRow: {
     minHeight: 58,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 14,
     paddingVertical: 9,
-    borderWidth: 1,
   },
-
   recipeIcon: {
     width: 32,
-
     height: 32,
-
     borderRadius: 12,
-
     alignItems: 'center',
-
     justifyContent: 'center',
-
     marginRight: 10,
   },
-
   recipeInfo: {
     flex: 1,
-
     minWidth: 0,
-
     paddingRight: 8,
   },
-
   recipeName: {
     fontSize: 13.5,
-
     lineHeight: 18,
-
     fontWeight: '600',
   },
-
   quantity: {
     fontSize: 10.5,
-
     lineHeight: 14,
-
     marginTop: 1,
-
     fontWeight: '500',
   },
-
-  /*
-   * ============================================================
-   * EMPTY
-   * ============================================================
-   */
-
   empty: {
     minHeight: 96,
-    borderWidth: 1,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 7,
   },
-
   emptyText: {
     fontSize: 12,
-
     lineHeight: 16,
-
     fontWeight: '500',
   },
 });

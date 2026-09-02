@@ -24,8 +24,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onPress, onLongP
       style={[
         styles.card, 
         { 
-          backgroundColor: theme.colors.surface, 
-          borderColor: theme.colors.primary + '22',
+          backgroundColor: theme.colors.surface,
         }
       ]}
       onPress={onPress}
@@ -94,7 +93,6 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     borderRadius: 8,
-    borderWidth: 1,
     marginHorizontal: 16,
     marginVertical: 7,
     overflow: 'hidden',

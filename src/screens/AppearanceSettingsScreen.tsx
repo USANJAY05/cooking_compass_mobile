@@ -16,7 +16,7 @@ export const AppearanceSettingsScreen = () => {
     <ScrollView contentContainerStyle={styles.content}>
       <Text style={[styles.title, { color: theme.colors.text }]}>Appearance</Text>
       <Text style={[styles.subtitle, { color: theme.colors.textMuted }]}>Choose the look and feel of MUVETH Kitchen.</Text>
-      <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
+      <View style={[styles.card, { backgroundColor: theme.colors.surface }]}>
         {options.map((option, index) => {
           const Icon = option.icon; const selected = themeType === option.value;
           return <React.Fragment key={option.value}>
@@ -32,4 +32,4 @@ export const AppearanceSettingsScreen = () => {
     </ScrollView>
   </View>;
 };
-const styles = StyleSheet.create({ container:{flex:1}, content:{padding:20}, title:{fontFamily:'Avenir Next',fontSize:27,fontWeight:'900',marginBottom:5}, subtitle:{fontSize:14,lineHeight:20,marginBottom:22}, card:{borderRadius:18,borderWidth:1,overflow:'hidden'}, option:{minHeight:72,flexDirection:'row',alignItems:'center',paddingHorizontal:16}, icon:{width:42,height:42,borderRadius:13,alignItems:'center',justifyContent:'center',marginRight:13},optionText:{flex:1,fontSize:16,fontWeight:'700'},radio:{width:22,height:22,borderRadius:11,borderWidth:2,alignItems:'center',justifyContent:'center'},radioDot:{width:10,height:10,borderRadius:5},divider:{height:1,marginLeft:71}});
+const styles = StyleSheet.create({ container:{flex:1}, content:{padding:20}, title:{fontFamily:'Avenir Next',fontSize:27,fontWeight:'900',marginBottom:5}, subtitle:{fontSize:14,lineHeight:20,marginBottom:22}, card:{borderRadius:18,overflow:'hidden'}, option:{minHeight:72,flexDirection:'row',alignItems:'center',paddingHorizontal:16}, icon:{width:42,height:42,borderRadius:13,alignItems:'center',justifyContent:'center',marginRight:13},optionText:{flex:1,fontSize:16,fontWeight:'700'},radio:{width:22,height:22,borderRadius:11,borderWidth:2,alignItems:'center',justifyContent:'center'},radioDot:{width:10,height:10,borderRadius:5},divider:{height:1,marginLeft:71}});
