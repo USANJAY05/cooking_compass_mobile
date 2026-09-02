@@ -1,0 +1,99 @@
+name: Fix component borders
+
+on:
+  push:
+    branches:
+      - bugfix/remove-component-borders
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: bugfix/remove-component-borders
+          fetch-depth: 0
+
+      - name: Remove decorative outer borders
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          def replace(path, patterns):
+              p = Path(path)
+              s = p.read_text()
+              original = s
+              for pattern, repl in patterns:
+                  s, n = re.subn(pattern, repl, s, flags=re.MULTILINE | re.DOTALL)
+                  if n == 0:
+                      print(f'No match: {path}: {pattern[:80]}')
+              p.write_text(s)
+              print(f'{path}: changed={s != original}')
+
+          # About: remove decorative card borders, keep dividers and controls.
+          replace('src/screens/AboutScreen.tsx', [
+              (r"(styles\.brandCard,\s*\{\s*backgroundColor:\s*theme\.colors\.surface,\s*)borderColor:\s*theme\.colors\.border,", r"\1"),
+              (r"(styles\.infoCard,\s*\{\s*backgroundColor:\s*theme\.colors\.surface,\s*)borderColor:\s*theme\.colors\.border,", r"\1"),
+              (r"(styles\.resourceCard,\s*\{\s*backgroundColor:\s*theme\.colors\.surface,\s*)borderColor:\s*theme\.colors\.border,", r"\1"),
+              (r"(\n\s*brandCard:\s*\{)\n\s*borderWidth:\s*1,", r"\1"),
+              (r"(\n\s*infoCard:\s*\{)\n\s*borderWidth:\s*1,", r"\1"),
+              (r"(\n\s*resourceCard:\s*\{)\n\s*borderWidth:\s*1,", r"\1"),
+          ])
+
+          # Cart: remove only the Shopping Period container border.
+          replace('src/screens/CartScreen.tsx', [
+              (r"(styles\.shoppingPeriodSection,\s*\{\s*backgroundColor:\s*theme\.colors\.surface,\s*)borderColor:\s*theme\.colors\.border,", r"\1"),
+              (r"(\n\s*shoppingPeriodSection:\s*\{)\n\s*borderWidth:\s*1,", r"\1"),
+          ])
+
+          # Routine calendar: remove the outer calendar border in both states.
+          replace('src/components/RoutineCalendar.tsx', [
+              (r"(styles\.container,\s*\{\s*backgroundColor:\s*theme\.colors\.surface,\s*)\s*borderColor:\s*theme\.colors\.primary\s*\+\s*'24',", r"\1"),
+              (r"(\n\s*container:\s*\{[^{}]*?)\n\s*borderWidth:\s*1,", r"\1"),
+          ])
+
+          # Recipe Detail: remove decorative outer card borders only.
+          recipe_cards = [
+              'hero', 'recipeMetaCard', 'statsCard', 'ratingCard',
+              'nutritionCard', 'ingredientCard', 'instructionCard', 'emptyCard'
+          ]
+          p = Path('src/screens/RecipeDetailScreen.tsx')
+          s = p.read_text()
+          for name in recipe_cards:
+              # Remove borderColor from the named outer-card style object in JSX.
+              s = re.sub(
+                  rf"(styles\.{name},\s*\{{)(.*?)(\}}\s*\])",
+                  lambda m: m.group(1) + re.sub(r"\s*borderColor:\s*theme\.colors\.border,?", "", m.group(2)) + m.group(3),
+                  s,
+                  flags=re.DOTALL,
+              )
+              # Remove borderWidth from the corresponding style definition.
+              s = re.sub(
+                  rf"(\n\s*{name}:\s*\{{)(.*?)(\n\s*\}}\s*,)",
+                  lambda m: m.group(1) + re.sub(r"\s*borderWidth:\s*1,?", "", m.group(2)) + m.group(3),
+                  s,
+                  flags=re.DOTALL,
+              )
+          # Hero has a remaining bottom divider that is part of the outer border treatment.
+          s = re.sub(r"(\n\s*hero:\s*\{.*?)(\n\s*borderBottomWidth:\s*1,)", r"\1", s, flags=re.DOTALL)
+          p.write_text(s)
+          print('src/screens/RecipeDetailScreen.tsx: changed')
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-component-borders.yml
+          git add src/screens/AboutScreen.tsx src/screens/CartScreen.tsx src/components/RoutineCalendar.tsx src/screens/RecipeDetailScreen.tsx
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 1
+          fi
+          git commit -m "fix: remove remaining decorative component borders"
+          git push origin bugfix/remove-component-borders
