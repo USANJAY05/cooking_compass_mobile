@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
 
       - name: Apply refactor
-        run: python scripts/refactor_recipe_detail_v3.py
+        run: python scripts/refactor_recipe_detail_v4.py
 
       - name: Commit changes and clean up
         run: |
@@ -25,6 +25,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/screens/RecipeDetailScreen.tsx src/components/PortionAdjuster.tsx
           git commit -m "refactor: extract recipe rating and nutrition components"
-          git rm .github/workflows/apply-recipe-refactor.yml scripts/refactor_recipe_detail.py scripts/refactor_recipe_detail_v2.py scripts/refactor_recipe_detail_v3.py
+          git rm .github/workflows/apply-recipe-refactor.yml scripts/refactor_recipe_detail.py scripts/refactor_recipe_detail_v2.py scripts/refactor_recipe_detail_v3.py scripts/refactor_recipe_detail_v4.py
           git commit -m "chore: remove temporary refactor tooling"
           git push origin HEAD:refactor/recipe-detail-components
